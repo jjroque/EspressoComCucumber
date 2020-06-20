@@ -1,0 +1,108 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
+apply plugin: 'com.trevjonez.composer'
+android {
+  compileSdkVersion 27
+
+  defaultConfig {
+    applicationId "com.example.heitorcolangelo.espressotests"
+    minSdkVersion 16
+    targetSdkVersion 27
+    versionCode 1
+    versionName "1.0"
+    testApplicationId "com.example.heitorcolangelo.espressotests.test"
+    testInstrumentationRunner "com.example.heitorcolangelo.espressotests.test.Instrumentation"
+    vectorDrawables.useSupportLibrary = true
+
+    resConfigs "en"
+    javaCompileOptions {
+      annotationProcessorOptions {
+        includeCompileClasspath true
+      }
+    }
+  }
+
+  def baseUrl = '"http://api.randomuser.me/"'
+
+  buildTypes {
+    debug {
+      minifyEnabled false
+      buildConfigField 'String', 'BASE_URL', baseUrl
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+      buildConfigField "String", "TEST_TAGS", "\"${getTestTags()}\""
+      sourceSets {
+        androidTest {
+          assets.srcDirs = ['src/androidTest/assets']
+        }
+      }
+    }
+  }
+}
+
+final butterKnifeVersion = '8.1.0'
+final picassoVersion = '2.5.2'
+final okHttpVersion = '3.3.1'
+final androidSupportVersion = '27.1.1'
+final retrofitVersion = '2.0.2'
+final espressoVersion = '3.0.2'
+
+dependencies {
+  compile fileTree(dir: 'libs', include: ['*.jar'])
+
+  // Picasso
+  implementation "com.squareup.picasso:picasso:$picassoVersion"
+
+  // ButterKnife
+  implementation "com.jakewharton:butterknife-compiler:$butterKnifeVersion"
+  implementation "com.jakewharton:butterknife:$butterKnifeVersion"
+
+  // EventBus
+  implementation 'org.greenrobot:eventbus:3.0.0'
+
+  // OkHttp
+  implementation "com.squareup.okhttp3:okhttp:$okHttpVersion"
+  implementation "com.squareup.okhttp3:logging-interceptor:$okHttpVersion"
+
+  // Retrofit
+  implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+  implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+
+  // Espresso
+  androidTestCompile "com.android.support.test.espresso:espresso-core:$espressoVersion"
+  androidTestCompile "com.android.support.test.espresso:espresso-intents:$espressoVersion"
+  androidTestImplementation 'com.android.support.test:runner:1.0.2'
+  androidTestImplementation 'com.android.support.test:rules:1.0.2'
+  androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+  androidTestImplementation "com.android.support:support-annotations:$androidSupportVersion"
+  testImplementation 'junit:junit:4.12'
+
+  //Projeto
+  implementation "com.android.support:appcompat-v7:$androidSupportVersion"
+  implementation "com.android.support:recyclerview-v7:$androidSupportVersion"
+
+  // MockWebServer
+  androidTestImplementation "com.squareup.okhttp3:mockwebserver:$okHttpVersion"
+
+  // Mirror
+  androidTestImplementation "net.vidageek:mirror:1.6.1"
+
+  //Cucumber
+  androidTestImplementation 'info.cukes:cucumber-android:1.2.5@jar'
+  androidTestImplementation 'info.cukes:cucumber-picocontainer:1.2.4'
+  androidTestImplementation 'com.android.support:support-annotations:27.1.1'
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+  //Barista
+  androidTestCompile('com.schibsted.spain:barista:2.7.0') {
+      exclude group: 'com.android.support'
+  }
+}
+
+repositories {
+  mavenCentral()
+}
+
+def getTestTags() {
+  return project.hasProperty("tags") ? project.getProperties().get("tags") : ""
+}
